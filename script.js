@@ -11,6 +11,8 @@ const realizarLogin = async (event) => {
     return;
   }
 
+  const mensagemResposta = document.getElementById("mensagem-resposta");
+
   try {
     const email = document.getElementById("emailUser").value;
     const password = document.getElementById("password").value;
@@ -24,15 +26,18 @@ const realizarLogin = async (event) => {
     const dataSaved = JSON.parse(localStorage.getItem("loginEnviado"));
 
     const response = await api.post("/login", dataSaved);
-    if (response.status === 200) {
-      window.location.href = "./recados.html";
-      console.log(`Deu certo! ${response.data.message}`);
-    } else if (response.status === 400) {
-      const mensagem = response.data.message;
-      alert(mensagem);
-    }
+
+    mensagemResposta.innerHTML = `<p> A requisição deu certo 
+      <br>
+      ${response.data.message}
+      </p>`;
+    window.location.href = "./recados.html";
+
+    localStorage.removeItem("loginEnviado");
   } catch (error) {
-    alert(`Erro durante a requisição! verifique suas credenciais!`);
-    console.log(`Erro durante a requisição : ${error.message}`);
+    mensagemResposta.innerHTML = `<p> A requisição falhou 
+    <br>
+    ${error.message}
+    </p>`;
   }
 };
